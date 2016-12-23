@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Flask React</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- styles -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/bulma/css/bulma.css') }}">
+</head>
+<body>
+
+<nav class="nav">
+    <div class="nav-left">
+        <a class="nav-item is-brand" href="#">
+            <h1 class="title">eBay</h1>
+        </a>
+    </div>
+
+    <div class="nav-center nav-menu">
+        <a class="nav-item is-tab" href="#">
+            Favorite Searches
+        </a>
+        <a class="nav-item is-tab" href="#">
+            Item List
+        </a>
+        <a class="nav-item is-tab" href="#">
+            Sellers
+        </a>
+    </div>
+
+    <span class="nav-toggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </span>
+
+    <div class="nav-right nav-menu">
+    </div>
+</nav>
+
+
+<div class="section">
+    <div class="container" id="ebay-app">
+    </div>
+</div>
+
+<!-- scripts -->
+<script src="{{ url_for('static', filename='bower_components/react/react.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/react/react-dom.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/react/react-dom.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/moment/moment.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/js/main.js') }}"></script>
+</body>
+</html>
+
