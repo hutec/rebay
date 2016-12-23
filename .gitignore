@@ -1,0 +1,14 @@
+*.DS_Store
+*.pyc
+.git
+.idea
+
+env
+venv
+
+node_modules/
+npm-debug.log
+bower_components/
+.module-cache
+project/ebay.yaml
+.bowerrc
