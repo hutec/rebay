@@ -19,7 +19,7 @@ def ebay_search():
 
 
 @app.route('/')
-def app():
+def ebay_app():
     return render_template('index.html')
 
 

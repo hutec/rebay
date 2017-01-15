@@ -28,6 +28,60 @@ class EbayFavorites extends React.Component {
 }
 
 
+class BrandSearch extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange() {
+        this.props.onUserInput(this.keywords.value);
+    }
+
+    render() {
+        return (
+            <div className="control is-grouped">
+                <p className="control">
+                    <input
+                        type="text"
+                        placeholder="Brand search..."
+                        ref={(input) => this.keywords = input}
+                    />
+                </p>
+                <p className="control">
+                    <button className="button is-primary" onClick={this.handleChange}>Search</button>
+                </p>
+            </div>
+        )
+    }
+}
+
+class PriceFilterBar extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange() {
+        this.props.onFilterChange(this.filterValueInput.value);
+    }
+
+    render() {
+        return (
+            <p className="control">
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    value={this.props.filterValue}
+                    ref={(input) => this.filterValueInput = input}
+                    onChange={this.handleChange}
+                />
+            </p>
+        )
+    }
+}
+
+
 class EbaySearch extends React.Component {
     gridElements() {
         var priceFilter = this.props.priceFilter;
@@ -79,30 +133,6 @@ class EbaySearch extends React.Component {
     }
 }
 
-class PriceFilterBar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange() {
-        this.props.onFilterChange(this.filterValueInput.value);
-    }
-
-    render() {
-        return (
-            <p className="control">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={this.props.filterValue}
-                    ref={(input) => this.filterValueInput = input}
-                    onChange={this.handleChange}
-                />
-            </p>
-        )
-    }
-}
 
 
 class EbayApp extends React.Component {
@@ -155,22 +185,24 @@ class EbayApp extends React.Component {
 
     render() {
        return (
-           <div className="columns">
-               <div className="column is-3">
+           <div className="columns is-mobile">
+               <div className="column">
                    <aside className="menu">
                        <p className="menu-label">
                            Favorite Searches
                        </p>
+                       <BrandSearch
+                           onUserInput={this.handleUserInput} />
                        <EbayFavorites
                            searchFavorites={this.state.searchFavorites}
                            onUserInput={this.handleUserInput}
                        />
                    </aside>
                </div>
-               <div class="column is-3">
-                   <PriceFilterBar
+               <div class="column">
+                   {/*<PriceFilterBar
                         onFilterChange={this.handlePriceFilter}
-                   />
+                   />*/}
                    <EbaySearch
                        priceFilter={this.state.priceFilter}
                        searchResults={this.state.searchResults}
