@@ -8,15 +8,16 @@ logger = logging.getLogger(__name__)
 SITEID = 'EBAY-DE'  # Trading API needs 77
 
 
-def get_favorite_searches():
+def get_favorite_searches(config_file='ebay.yaml'):
     """
     Return favorite searches
 
     :return: dict
     """
     logger.info("Getting favorite searches")
+
     try:
-        api = Trading(config_file='ebay.yaml', siteid='77')
+        api = Trading(config_file=config_file, siteid='77')
         response = api.execute('GetMyeBayBuying', {
             'FavoriteSearches': {
                 'Include': 'true',
