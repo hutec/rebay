@@ -119,7 +119,7 @@ class EbayItems extends React.Component {
             }
 
             return(
-                <div className="column is-3">
+                <div className="column is-3 is-mobile">
                     <HotKeys keyMap={map} handlers={itemHandler}>
                         <div className="card">
                             <div className="card-image">
@@ -131,9 +131,9 @@ class EbayItems extends React.Component {
                             </div>
                             <div className="card-content">
                                 <div className="content">
-                                    {item.title}
-                                    <br/>
-                                    <small>{item.sellingStatus.convertedCurrentPrice.value} €</small>
+                                    <small>{item.title}</small>
+                                    <hr />
+                                    <b>{item.sellingStatus.convertedCurrentPrice.value} €</b>
                                     <br/>
                                     <small>{getDuration(item.sellingStatus.timeLeft)}</small>
                                 </div>

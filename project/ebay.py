@@ -45,7 +45,7 @@ def find_in_europe(keywords=""):
     try:
         api = Finding(config_file="ebay.yaml", siteid=SITEID)
         response = api.execute('findItemsAdvanced', {
-            'categoryId': 11450,
+            'categoryId': [1059, 93427],
             'keywords': keywords,
             'sortOrder': 'EndTimeSoonest',
             'itemFilter': {
