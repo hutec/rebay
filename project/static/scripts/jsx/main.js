@@ -2,6 +2,21 @@
  * Created by robin on 14.12.16.
  */
 
+import {HotKeys} from 'react-hotkeys';
+import * as React from "react";
+
+const map = {
+    "ctrlEnter": "ctrl+enter",
+    "h": "h"
+};
+const handlers = {
+    'ctrlEnter': (event) => document.getElementById('brandSearch').focus(),
+};
+
+const itemHandler = {
+    'h': (event) => alert("Pressed h")
+}
+
 var getDuration = function(isoDuration) {
     var duration = moment.duration(isoDuration);
     var days = duration.days();
@@ -12,6 +27,9 @@ var getDuration = function(isoDuration) {
 };
 
 class EbayFavorites extends React.Component {
+    /**
+     *
+     **/
     handleClick(keywords) {
         this.props.onUserInput(keywords);
     }
@@ -44,6 +62,7 @@ class BrandSearch extends React.Component {
                 <p className="control">
                     <input
                         type="text"
+                        id="brandSearch"
                         placeholder="Brand search..."
                         ref={(input) => this.keywords = input}
                     />
@@ -82,7 +101,7 @@ class PriceFilterBar extends React.Component {
 }
 
 
-class EbaySearch extends React.Component {
+class EbayItems extends React.Component {
     gridElements() {
         var priceFilter = this.props.priceFilter;
 
@@ -101,24 +120,26 @@ class EbaySearch extends React.Component {
 
             return(
                 <div className="column is-3">
-                    <div className="card">
-                        <div className="card-image">
-                            <figure className="image">
-                                <a href={item.viewItemURL}>
-                                    {imageElement}
-                                </a>
-                            </figure>
-                        </div>
-                        <div className="card-content">
-                            <div className="content">
-                                {item.title}
-                                <br/>
+                    <HotKeys keyMap={map} handlers={itemHandler}>
+                        <div className="card">
+                            <div className="card-image">
+                                <figure className="image">
+                                    <a href={item.viewItemURL}>
+                                        {imageElement}
+                                    </a>
+                                </figure>
+                            </div>
+                            <div className="card-content">
+                                <div className="content">
+                                    {item.title}
+                                    <br/>
                                     <small>{item.sellingStatus.convertedCurrentPrice.value} €</small>
-                                <br/>
+                                    <br/>
                                     <small>{getDuration(item.sellingStatus.timeLeft)}</small>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </HotKeys>
                 </div>
             )
         });
@@ -127,7 +148,7 @@ class EbaySearch extends React.Component {
     render() {
         return (
             <div className="columns is-multiline" id="ebay-grid">
-                {this.gridElements()}
+                    {this.gridElements()}
             </div>
         )
     }
@@ -185,31 +206,33 @@ class EbayApp extends React.Component {
 
     render() {
        return (
-           <div className="columns is-mobile">
-               <div className="column">
-                   <aside className="menu">
-                       <p className="menu-label">
-                           Favorite Searches
-                       </p>
-                       <BrandSearch
-                           onUserInput={this.handleUserInput} />
-                       <EbayFavorites
-                           searchFavorites={this.state.searchFavorites}
-                           onUserInput={this.handleUserInput}
-                       />
-                   </aside>
-               </div>
-               <div class="column">
-                   {/*<PriceFilterBar
+           <HotKeys keyMap={map} handlers={handlers}>
+               <div className="columns is-mobile">
+                   <div className="column">
+                       <aside className="menu">
+                           <p className="menu-label">
+                               Favorite Searches
+                           </p>
+                           <BrandSearch
+                               onUserInput={this.handleUserInput} />
+                           <EbayFavorites
+                               searchFavorites={this.state.searchFavorites}
+                               onUserInput={this.handleUserInput}
+                           />
+                       </aside>
+                   </div>
+                   <div class="column">
+                       {/*<PriceFilterBar
                         onFilterChange={this.handlePriceFilter}
-                   />*/}
-                   <EbaySearch
-                       priceFilter={this.state.priceFilter}
-                       searchResults={this.state.searchResults}
-                       searchKeywords={this.state.searchKeywords}
-                   />
+                        />*/}
+                       <EbayItems
+                           priceFilter={this.state.priceFilter}
+                           searchResults={this.state.searchResults}
+                           searchKeywords={this.state.searchKeywords}
+                       />
+                   </div>
                </div>
-           </div>
+           </HotKeys>
        )
    }
 };
