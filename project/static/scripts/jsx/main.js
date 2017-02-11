@@ -7,15 +7,15 @@ import * as React from "react";
 
 const map = {
     "ctrlEnter": "ctrl+enter",
+    "ctrlDown": "ctrl+down",
     "h": "h"
 };
-const handlers = {
-    'ctrlEnter': (event) => document.getElementById('brandSearch').focus(),
-};
+
 
 const itemHandler = {
     'h': (event) => alert("Pressed h")
 }
+
 
 var getDuration = function(isoDuration) {
     var duration = moment.duration(isoDuration);
@@ -58,7 +58,7 @@ class BrandSearch extends React.Component {
 
     render() {
         return (
-            <div className="control is-grouped">
+            <div className="control">
                 <p className="control">
                     <input
                         type="text"
@@ -119,7 +119,7 @@ class EbayItems extends React.Component {
             }
 
             return(
-                <div className="column is-3 is-mobile">
+                <div className="column is-2 is-mobile">
                     <HotKeys keyMap={map} handlers={itemHandler}>
                         <div className="card">
                             <div className="card-image">
@@ -163,17 +163,46 @@ class EbayApp extends React.Component {
             searchKeywords: 'Test',
             searchResults: [],
             searchFavorites: [],
-            priceFilter: 400.0
+            priceFilter: 400.0,
+            listPosition: 0,
+        };
+
+        this.keyEventHandler = {
+            'ctrl+enter': (event) => document.getElementById('brandSearch').focus(),
+            'ctrl+up': (event) => this.changeListPosition(-1),
+            'ctrl+down': (event) => this.changeListPosition(1)
         };
 
         this.handleUserInput = this.handleUserInput.bind(this);
         this.handlePriceFilter = this.handlePriceFilter.bind(this);
+        this.changeListPosition = this.changeListPosition.bind(this);
+    }
+
+    changeListPosition(change) {
+        this.state.listPosition += change;
+        this.state.listPosition = Math.max(0, this.state.listPosition)
+        var activeSearch = this.state.searchFavorites[this.state.listPosition];
+        this.handleUserInput(activeSearch.QueryKeywords);
     }
 
     handleUserInput(keywords) {
+        var index = this.state.listPosition;
+        // Keep list position during user search
+        for(var i = 0, len = this.state.searchFavorites.length; i < len; i++) {
+            if(this.state.searchFavorites[i].QueryKeywords === keywords) {
+                index = i;
+                break;
+            }
+        }
+
+
         this.setState({
-            searchKeywords: keywords
+            searchKeywords: keywords,
+            listPosition: index,
+            searchResults: []
         });
+
+        window.scrollTo(0, 0);
 
         $.get({
             url: "/ebay/search",
@@ -206,22 +235,23 @@ class EbayApp extends React.Component {
 
     render() {
        return (
-           <HotKeys keyMap={map} handlers={handlers}>
+           <HotKeys handlers={this.keyEventHandler}>
+               <div className="container" id="title-container" >
+                   <h1 className="title">{this.state.searchKeywords}</h1>
+                   <hr />
+               </div>
                <div className="columns is-mobile">
-                   <div className="column">
-                       <aside className="menu">
-                           <p className="menu-label">
-                               Favorite Searches
-                           </p>
+                   <aside className="column is-2 hero  aside is-fullheight is-hidden-mobile" id="side-menu">
+                       <div>
                            <BrandSearch
-                               onUserInput={this.handleUserInput} />
+                            onUserInput={this.handleUserInput} />
                            <EbayFavorites
                                searchFavorites={this.state.searchFavorites}
                                onUserInput={this.handleUserInput}
                            />
-                       </aside>
-                   </div>
-                   <div class="column">
+                       </div>
+                   </aside>
+                   <div className="column is-10">
                        {/*<PriceFilterBar
                         onFilterChange={this.handlePriceFilter}
                         />*/}
@@ -238,6 +268,6 @@ class EbayApp extends React.Component {
 };
 
 ReactDOM.render(
-    <EbayApp/>,
+    <EbayApp />,
     document.getElementById('ebay-app')
 );
