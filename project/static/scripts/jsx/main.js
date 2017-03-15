@@ -87,15 +87,17 @@ class PriceFilterBar extends React.Component {
 
     render() {
         return (
-            <p className="control">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={this.props.filterValue}
-                    ref={(input) => this.filterValueInput = input}
-                    onChange={this.handleChange}
-                />
-            </p>
+            <div className="control">
+                <p className="control">
+                    <input
+                        type="text"
+                        placeholder="Price Filter"
+                        value={this.props.filterValue}
+                        ref={(input) => this.filterValueInput = input}
+                        onChange={this.handleChange}
+                    />
+                </p>
+            </div>
         )
     }
 }
@@ -160,7 +162,7 @@ class EbayApp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            searchKeywords: 'Test',
+            searchKeywords: '',
             searchResults: [],
             searchFavorites: [],
             priceFilter: 400.0,
@@ -241,20 +243,27 @@ class EbayApp extends React.Component {
                    <hr />
                </div>
                <div className="columns is-mobile">
-                   <aside className="column is-2 hero  aside is-fullheight is-hidden-mobile" id="side-menu">
+                   <aside className="column menu is-2 aside is-fullheight is-hidden-mobile" id="side-menu">
                        <div>
-                           <BrandSearch
-                            onUserInput={this.handleUserInput} />
                            <EbayFavorites
                                searchFavorites={this.state.searchFavorites}
                                onUserInput={this.handleUserInput}
                            />
                        </div>
                    </aside>
+
                    <div className="column is-10">
-                       {/*<PriceFilterBar
-                        onFilterChange={this.handlePriceFilter}
-                        />*/}
+                       <div className="control is-horizontal" id="control-container">
+                           <label className="control-label">Brand</label>
+                           <BrandSearch
+                               onUserInput={this.handleUserInput} />
+
+                           <label className="control-label">Price</label>
+                           <PriceFilterBar
+                               onFilterChange={this.handlePriceFilter}
+                           />
+                       </div>
+
                        <EbayItems
                            priceFilter={this.state.priceFilter}
                            searchResults={this.state.searchResults}
