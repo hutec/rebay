@@ -104,7 +104,7 @@ class PriceFilterBar extends React.Component {
 
 
 class EbayItems extends React.Component {
-    gridElements() {
+    gridEbayElements() {
         var priceFilter = this.props.priceFilter;
 
         return this.props.searchResults.map(function(item) {
@@ -147,10 +147,59 @@ class EbayItems extends React.Component {
         });
     }
 
+    gridKKElements() {
+        var priceFilter = this.props.priceFilter;
+
+        return this.props.searchResults.map(function(item) {
+            if (item.price > priceFilter) {
+                return
+            }
+
+            if (item.pictureURLLarge) {
+                var imageElement = React.createElement("img", {src: item.pictureURLLarge});
+            } else if(item.galleryPlusPictureURL) {
+                var imageElement = React.createElement("img", {src: item.galleryPlusPictureURL});
+            } else {
+                var imageElement = React.createElement("img", {src: item.galleryURL});
+            }
+
+            return(
+                <div className="column is-2 is-mobile">
+                    <HotKeys keyMap={map} handlers={itemHandler}>
+                        <div className="card">
+                            <div className="card-image">
+                                <figure className="image">
+                                    <a href={item.viewItemURL}>
+                                        {imageElement}
+                                    </a>
+                                </figure>
+                            </div>
+                            <div className="card-content">
+                                <div className="content">
+                                    <small>{item.description}</small>
+                                    <hr />
+                                    <b>{item.price} €</b>
+                                </div>
+                            </div>
+                        </div>
+                    </HotKeys>
+                </div>
+            )
+        });
+
+    }
+
     render() {
+        var elements;
+        if (this.props.mode == "ebay") {
+            elements = this.gridEbayElements();
+        } else if(this.props.mode == "kleiderkreisel") {
+            elements = this.gridKKElements();
+        }
+
         return (
             <div className="columns is-multiline" id="ebay-grid">
-                    {this.gridElements()}
+                    {elements}
             </div>
         )
     }
@@ -162,17 +211,19 @@ class EbayApp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            mode: "ebay",
             searchKeywords: '',
             searchResults: [],
             searchFavorites: [],
-            priceFilter: 400.0,
+            priceFilter: 10000.0,
             listPosition: 0,
         };
 
         this.keyEventHandler = {
             'ctrl+enter': (event) => document.getElementById('brandSearch').focus(),
             'ctrl+up': (event) => this.changeListPosition(-1),
-            'ctrl+down': (event) => this.changeListPosition(1)
+            'ctrl+down': (event) => this.changeListPosition(1),
+            'ctrl+m': (event) => this.switchMode()
         };
 
         this.handleUserInput = this.handleUserInput.bind(this);
@@ -187,6 +238,18 @@ class EbayApp extends React.Component {
         this.handleUserInput(activeSearch.QueryKeywords);
     }
 
+    switchMode() {
+        if (this.state.mode == "ebay") {
+            this.setState({
+                "mode": "kleiderkreisel"
+            })
+        } else {
+            this.setState({
+                "mode": "ebay"
+            })
+        }
+    }
+
     handleUserInput(keywords) {
         var index = this.state.listPosition;
         // Keep list position during user search
@@ -197,7 +260,6 @@ class EbayApp extends React.Component {
             }
         }
 
-
         this.setState({
             searchKeywords: keywords,
             listPosition: index,
@@ -206,8 +268,15 @@ class EbayApp extends React.Component {
 
         window.scrollTo(0, 0);
 
+        var endpoint;
+        if (this.state.mode == "ebay") {
+            endpoint = "/ebay/search"
+        } else if (this.state.mode == "kleiderkreisel") {
+            endpoint = "/kk/search"
+        }
+
         $.get({
-            url: "/ebay/search",
+            url: endpoint,
             data: {
                 keywords: keywords
             },
@@ -239,7 +308,7 @@ class EbayApp extends React.Component {
        return (
            <HotKeys handlers={this.keyEventHandler}>
                <div className="container" id="title-container" >
-                   <h1 className="title">{this.state.searchKeywords}</h1>
+                   <h1 className="title">{this.state.searchKeywords} - {this.state.mode}</h1>
                    <hr />
                </div>
                <div className="columns is-mobile">
@@ -264,10 +333,13 @@ class EbayApp extends React.Component {
                            />
                        </div>
 
+
                        <EbayItems
                            priceFilter={this.state.priceFilter}
                            searchResults={this.state.searchResults}
                            searchKeywords={this.state.searchKeywords}
+                           mode={this.state.mode}
+
                        />
                    </div>
                </div>

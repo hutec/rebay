@@ -1,5 +1,7 @@
 from flask import Flask, render_template, jsonify, request
+
 from ebay import get_favorite_searches, find_in_europe
+from kleiderkreisel import get_items
 
 app = Flask(__name__)
 
@@ -16,6 +18,15 @@ def ebay_search():
     return jsonify(
         find_in_europe(keywords)
     )
+
+
+@app.route('/kk/search')
+def kleiderkreisel_search():
+    keywords = request.args.get('keywords', '')
+    return jsonify(
+        get_items(keywords)
+    )
+
 
 
 @app.route('/')
