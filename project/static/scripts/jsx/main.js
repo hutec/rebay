@@ -151,7 +151,7 @@ class EbayItems extends React.Component {
         var priceFilter = this.props.priceFilter;
 
         return this.props.searchResults.map(function(item) {
-            if (item.price > priceFilter) {
+            if (parseFloat(item.price.replace(',','.')) > priceFilter) {
                 return
             }
 
