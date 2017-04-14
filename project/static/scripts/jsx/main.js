@@ -197,6 +197,12 @@ class EbayItems extends React.Component {
             elements = this.gridKKElements();
         }
 
+        if (this.props.searchResults.length == 0) {
+            return (
+                <div><h1>0 results</h1></div>
+            )
+        }
+
         return (
             <div className="columns is-multiline" id="ebay-grid">
                     {elements}
@@ -241,13 +247,17 @@ class EbayApp extends React.Component {
     switchMode() {
         if (this.state.mode == "ebay") {
             this.setState({
-                "mode": "kleiderkreisel"
-            })
+                "mode": "kleiderkreisel",
+                "searchResults": []
+            });
         } else {
             this.setState({
-                "mode": "ebay"
-            })
+                "mode": "ebay",
+                "searchResults": []
+            });
         }
+
+        this.handleUserInput(this.state.searchKeywords);
     }
 
     handleUserInput(keywords) {
