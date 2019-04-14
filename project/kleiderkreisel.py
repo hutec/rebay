@@ -13,7 +13,7 @@ http = urllib3.PoolManager()
 max_pages = 5
 
 
-base_url = "https://www.kleiderkreisel.de/herrenmode.js?search_text=" # &page=2
+base_url = "https://www.kleiderkreisel.de/herren?search_text=" # &page=2
 redirect_base_url = "https://www.kleiderkreisel.de"
 
 def get_items(keywords=""):
